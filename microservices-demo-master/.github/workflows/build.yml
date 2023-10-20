@@ -1,0 +1,27 @@
+name: CI for EKS App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Login to Amazon ECR
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set region eu-west-1
+        aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 579900296884.dkr.ecr.eu-west-1.amazonaws.com
+
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 579900296884.dkr.ecr.eu-west-1.amazonaws.com/sock-shop:latest .
+        docker push aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 579900296884.dkr.ecr.eu-west-1.amazonaws.com/sock-shop:latest
+
