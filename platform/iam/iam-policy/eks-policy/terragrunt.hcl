@@ -27,9 +27,12 @@ inputs = {
     {
       "Effect": "Allow",
       "Action": [
+        "secretsmanager:GetResourcePolicy",
         "secretsmanager:GetSecretValue",
-        "secretsmanager:DescribeSecret"
-      ],
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:ListSecretVersionIds",
+        "secretsmanager:ListSecrets"
+        ],
       "Resource": "*"
     }
   ]
