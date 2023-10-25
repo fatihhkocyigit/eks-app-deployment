@@ -26,7 +26,10 @@ inputs = {
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": "secretsmanager:GetSecretValue",
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
       "Resource": "*"
     }
   ]
