@@ -6,16 +6,18 @@ locals {
   # Automatically load environment-level variables
   account_vars = read_terragrunt_config(find_in_parent_folders("account.hcl"))
   region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))  
+  env_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))  
 
   # Extract out common variables for reuse
   region = local.region_vars.inputs.region
+  project = local.env_vars.inputs.project
 
 }
 
 # Indicate the input values to use for the variables of the module.
 inputs = {
 
-  name = "training-vpc"
+  name = "${local.project}-vpc"
   azs  = ["${local.region}a", "${local.region}b"]
   
   create_igw = true
