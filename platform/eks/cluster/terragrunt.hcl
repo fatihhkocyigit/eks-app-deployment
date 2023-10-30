@@ -10,25 +10,33 @@ locals {
   # Automatically load environment-level variables
   account_vars = read_terragrunt_config(find_in_parent_folders("account.hcl"))
   region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))  
+  env_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))  
 
   # Extract out common variables for reuse
   region = local.region_vars.inputs.region
+  project = local.env_vars.inputs.project
+
 }
 
 inputs = {
-  cluster_name = "training-eks" 
+  cluster_name = "${local.project}-eks" 
   cluster_version = "1.28"
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
+  cloudwatch_log_group_retention_in_days = 7
   cluster_addons = {
     coredns = {
       resolve_conflicts = "OVERWRITE"
     }
     kube-proxy = {}
+    vpc-cni = {
+        resolve_conflicts = "OVERWRITE"
+    }
     aws-ebs-csi-driver = {
       resolve_conflicts = "OVERWRITE"
     }
   }
+
   cluster_encryption_config = [
     {
       provider_key_arn = "${dependency.kms.outputs.key_arn}"
@@ -42,9 +50,9 @@ inputs = {
   }
   eks_managed_node_groups = {
     linux = {
-      min_size     = 3
+      min_size     = 1
       max_size     = 3
-      desired_size = 3
+      desired_size = 1
 
       instance_types = ["t3.xlarge"]
       capacity_type  = "ON_DEMAND"
@@ -81,17 +89,33 @@ inputs = {
   subnet_ids = dependency.vpc.outputs.private_subnets
   subnet_id_names = "*eks*"
 
+  aws_auth_roles = [
+    {
+      rolearn  = "${dependency.admin_role.outputs.iam_role_arn}"
+      username = "${dependency.admin_role.outputs.iam_role_name}"
+      groups   = ["system:masters"]
+    },
+  ]
+
 }
 
 dependency "kms" {
-  config_path = "../kms"
+  config_path = "../../kms"
   mock_outputs = {
     key_arn = ""
   }
 }
 
+dependency "admin_role" {
+    config_path = "../../iam/iam-role/admin-role"
+        mock_outputs = {
+        iam_role_arn = ""
+        iam_role_name = ""
+    }
+}
+
 dependency "vpc" {
-  config_path = "../vpc"
+  config_path = "../../vpc"
   mock_outputs = {
     vpc_id = "known after apply"
     vpc_cidr_block = "0.0.0.0/0"
