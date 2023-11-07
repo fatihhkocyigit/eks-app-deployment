@@ -1,2 +1,2 @@
 # eks-app-deployment
-Deploying an app on EKS using Terraform with HELM, GitOps
+Deploying an app on EKS using Terraform with HELM, GitOps.
