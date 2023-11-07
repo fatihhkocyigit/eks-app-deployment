@@ -24,7 +24,7 @@ jobs:
       run: aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 579900296884.dkr.ecr.eu-west-1.amazonaws.com
 
     - name: Build Docker Image
-      run: docker build -t 579900296884.dkr.ecr.eu-west-1.amazonaws.com/sock-shop:latest -f ./microservices-demo-master/deploy/kubernetes/Dockerfile ./microservices-demo-master/deploy/kubernetes 
+      run: docker build -t 579900296884.dkr.ecr.eu-west-1.amazonaws.com/training-eks:latest -f ./microservices-demo-master/deploy/kubernetes/Dockerfile ./microservices-demo-master/deploy/kubernetes 
 
     - name: Push Docker Image to Amazon ECR
-      run: docker push 579900296884.dkr.ecr.eu-west-1.amazonaws.com/sock-shop:latest
+      run: docker push 579900296884.dkr.ecr.eu-west-1.amazonaws.com/training-eks:latest
