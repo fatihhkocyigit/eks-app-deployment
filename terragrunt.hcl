@@ -34,7 +34,7 @@ terraform {
   backend "s3" {
     bucket         = "${local.s3_bucket_name}"
     key            = "platform/${path_relative_to_include()}/terraform.tfstate"
-    region         = "eu-west-1"
+    region         = "eu-central-1"
     encrypt        = true
   }
 }
